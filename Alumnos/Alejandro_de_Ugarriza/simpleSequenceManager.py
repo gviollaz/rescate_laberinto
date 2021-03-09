@@ -75,7 +75,7 @@ while True:
         #This runs in sequence
         r.startSequence()
         r.seqPrint("Antes de delay / before delay")
-        r.delay(0.1)
+        r.delay(0.01)
         if r.seqPrint("Despues de delay / after delay"):
             r.changeState("overTime")
 
