@@ -386,7 +386,7 @@ loop:
 		sequencia:
 			* parar
 			* Girar 360 grados lentamente
-			* Registrar casilla como victima recolectada
+			* Registrar casilla como victima recolectada / TODO: Cambiar nombre a casilla analizada
 			* calcular camino
 			* cambiar estado a "main"
 		
@@ -423,7 +423,7 @@ loop:
 	
 	estado "stopped moving":
 		sequencia:
-			* Moverse hacia atras por 1 segundos
+			* Moverse hacia atras por 1 segundo
 			* girar 360 grados
 			* Calcular camino
 			* cambiar estado a "main"
