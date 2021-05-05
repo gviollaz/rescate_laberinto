@@ -1,0 +1,29 @@
+grilla = [
+[V , W , V , W , V , W , V , W , V ],
+[W , T , Wf, T , Wf, T , Wf, T , W ],
+[V , Wf, Vf, Wf, Vf, Wf, Vf, Wf, V ],
+[W , T , Wf, T , Wf, T , Wf, T , W ],
+[V , Wf, Vf, Wf, Vf, Wf, V , W , V ],
+[W , T , Wf, T , Wf, T , Wf, T , W ],
+[V , Wf, Vf, Wf, Vf, Wf, Vf, Wf, V ],
+[W , T , Wf, T , Wf, T , Wf, T , W ],
+[V , W , V , W , V , W , V , W , V ]
+
+]
+
+nodoANumero(Nodo):
+    if Nodo.isOccupied:
+        return 1
+
+sizex, sizey = claseGrilla.size()
+miGrilla = np.array((sizex, sizey))
+
+
+for y in range(sizey):  
+    for x in range(sizex):
+        if grilla[x][y].paredesCurvas != Nada:
+            if grilla[x][y].paredesCurvas == [1, 1]:
+                miGrilla[x +1][y+1] = 1
+        miGrilla[x][y] = nodoANumero(grilla[x][y])
+
+claseGrilla.getNode((0, 0), "rightWall").occupied
