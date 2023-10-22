@@ -26,13 +26,13 @@ class Comunicator(Sensor):
 
     def send_lack_of_progress(self):
         self.do_get_world_info = False
-        message = struct.pack('c', 'L'.encode())  # message = 'L' to activate lack of progress
+        message = struct.pack("c", "L".encode())  # message = "L" to activate lack of progress
         self.emmiter.send(message)
         self.do_get_world_info = False
 
     def send_end_of_play(self):
         self.do_get_world_info = False
-        exit_mes = struct.pack('c', b'E')
+        exit_mes = struct.pack("c", b"E")
         self.emmiter.send(exit_mes)
         print("Ended!!!!!")
 
@@ -42,23 +42,23 @@ class Comunicator(Sensor):
             print(np_array)
         s = np_array.shape
         # Get shape as bytes
-        s_bytes = struct.pack('2i', *s)
+        s_bytes = struct.pack("2i", *s)
         # Flattening the matrix and join with ','
         flatMap = ','.join(np_array.flatten())
         # Encode
-        sub_bytes = flatMap.encode('utf-8')
+        sub_bytes = flatMap.encode("utf-8")
         # Add togeather, shape + map
         a_bytes = s_bytes + sub_bytes
         # Send map data
         self.emmiter.send(a_bytes)
         # STEP3 Send map evaluate request
-        map_evaluate_request = struct.pack('c', b'M')
+        map_evaluate_request = struct.pack("c", b"M")
         self.emmiter.send(map_evaluate_request)
         self.do_get_world_info = False
 
     def request_game_data(self):
         if self.do_get_world_info:
-            message = struct.pack('c', 'G'.encode())  # message = 'G' for game information
+            message = struct.pack("c", "G".encode())  # message = "G" for game information
             self.emmiter.send(message)  # send message
 
     def update(self):
@@ -67,8 +67,8 @@ class Comunicator(Sensor):
             if self.receiver.getQueueLength() > 0: # If receiver queue is not empty
                 received_data = self.receiver.getBytes()
                 if len(received_data) > 2:
-                    tup = struct.unpack('c f i', received_data) # Parse data into char, float, int
-                    if tup[0].decode("utf-8") == 'G':
+                    tup = struct.unpack("c f i", received_data) # Parse data into char, float, int
+                    if tup[0].decode("utf-8") == "G":
                         self.game_score = tup[1]
                         self.remaining_time = tup[2]
                         self.receiver.nextPacket() # Discard the current data packet
@@ -79,7 +79,7 @@ class Comunicator(Sensor):
                 print(received_data)
                 if len(received_data) < 2:
                     tup = struct.unpack('c', received_data)  # Parse data into character
-                    if tup[0].decode("utf-8") == 'L':  # 'L' means lack of progress occurred
+                    if tup[0].decode("utf-8") == "L":  # "L" means lack of progress occurred
                         print("Detected Lack of Progress!")
                         self.lack_of_progress = True
                     self.receiver.nextPacket()  # Discard the current data packetelse:
