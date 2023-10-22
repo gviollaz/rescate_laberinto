@@ -297,7 +297,6 @@ class FinalMatrixCreator:
 
         
         self.__set_node_as_character(final_text_grid, robot_node, "5")
-
         return final_text_grid
         
     
