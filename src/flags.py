@@ -17,10 +17,12 @@ TUNE_FILTER = 0
 
 
 DO_SAVE_FIXTURE_DEBUG = 0
-SAVE_FIXTURE_DEBUG_DIR = "/home/iitaadmin/simulated_rescue_maze/debug_imgs"
+SAVE_FIXTURE_DEBUG_DIR = "C:/Users/nacho/Documents/Programacion/webots_2023/rescate_laberinto_2023/tests/Mapeos_primeras_pruebas"
 
 DO_SAVE_FINAL_MAP = 0
-SAVE_FINAL_MAP_DIR = "/home/iitaadmin/simulated_rescue_maze/final_maps"
+SAVE_FINAL_MAP_DIR = "C:/Users/nacho/Documents/Programacion/webots_2023/rescate_laberinto_2023/tests/Mapeos_primeras_pruebas"
 
 DO_SAVE_DEBUG_GRID = 0
-SAVE_DEBUG_GRID_DIR = "/home/iitaadmin/simulated_rescue_maze/final_maps"
+SAVE_DEBUG_GRID_DIR = "C:/Users/nacho/Documents/Programacion/webots_2023/rescate_laberinto_2023/tests/Mapeos_primeras_pruebas"
+
+#"/home/iitaadmin/simulated_rescue_maze/final_maps" (original)
