@@ -8,7 +8,7 @@ class aStarNode:
     def __init__(self, location):
         self.location = location
         self.parent = None
-        self.g = float('inf')
+        self.g = float("inf")
         self.p = 0
         self.f = 0
 
