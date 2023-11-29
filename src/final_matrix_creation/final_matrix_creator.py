@@ -10,6 +10,8 @@ import cv2 as cv
 from flags import SHOW_MAP_AT_END, DO_SAVE_FINAL_MAP, SAVE_FINAL_MAP_DIR, DO_SAVE_DEBUG_GRID, SAVE_DEBUG_GRID_DIR
 
 import time
+#from fixture_detection.fixture_clasification import FixtureClasiffier
+#from fixture_detection.fixture_detection import FixtureDetector
 
 class WallMatrixCreator:
     def __init__(self, square_size_px: int):
@@ -121,6 +123,11 @@ class WallMatrixCreator:
         
         return final_wall_grid
     
+#    def victim_in_grid(self):
+#        letter_position = FixtureDetector.get_fixture_positions_in_image("Y") * "ancho_de_matriz" + FixtureDetector.get_fixture_positions_in_image("X")
+#        return letter_position
+
+
 
 class FloorMatrixCreator:
     def __init__(self, square_size_px: int) -> None:
@@ -226,6 +233,51 @@ class FinalMatrixCreator:
         self.wall_matrix_creator = WallMatrixCreator(self.__square_size_px)
         self.floor_matrix_creator = FloorMatrixCreator(self.__square_size_px)
 
+    def stringMatriz(self, matriz):
+        #matriz de string a int
+        intmatriz = []
+
+        for fila in matriz:
+            aux = []
+            for elemento in fila:
+                a = int(elemento)
+                aux.append(a)
+            intmatriz.append(aux)
+
+        for i in intmatriz:
+            print(i)
+        
+        return intmatriz
+    
+    def stringMatrizreverse(self, matriz):
+        #matriz de string a int
+            stringmatriz = []
+
+            for fila in matriz:
+                aux = []
+                for elemento in fila:
+                    a = str(elemento)
+                    aux.append(a)
+                stringmatriz.append(aux)
+
+            for i in stringmatriz:
+                print(i)
+            
+            return stringmatriz
+
+    def delete_row(self, matriz_procesar):
+    #Quita las filas que contengan valores innecesarios
+        columnastotales = len(matriz_procesar[0])
+        column_reference = [0]*columnastotales
+        print("El vector de referencia es:", column_reference)
+    
+        result = [elem for elem in matriz_procesar if elem != column_reference]
+        return result
+    
+
+    def transposed_matriz2(self, matriz):
+        nueva_matriz = [list(columnas) for columnas in zip(*matriz)]
+        return nueva_matriz
 
     def pixel_grid_to_final_grid(self, pixel_grid: CompoundExpandablePixelGrid, robot_start_position: np.ndarray) -> np.ndarray:
         np.set_printoptions(linewidth=1000000000000, threshold=100000000000000)
@@ -260,8 +312,20 @@ class FinalMatrixCreator:
 
         # Mix everything togehter
         text_grid = self.__get_final_text_grid(wall_node_array, floor_string_array, robot_node)
-
-
+        #print("imprimo text grid")
+        #print(text_grid)
+        text_grid = self.stringMatriz(text_grid)
+        #print("en int")
+        #print(text_grid)
+        text_grid = self.delete_row(text_grid)
+        #print("sin primeros 0")
+        #print(text_grid)
+        text_grid = self.transposed_matriz2(text_grid)
+        text_grid = self.delete_row(text_grid)
+        text_grid = self.transposed_matriz2(text_grid)
+        text_grid = self.stringMatrizreverse(text_grid)
+        #print("en str")
+        #print(text_grid)
         return np.array(text_grid)
 
         #wall_array = self.offset_array(wall_array, self.square_size_px, pixel_grid.offsets)
@@ -287,6 +351,15 @@ class FinalMatrixCreator:
                 else:
                     f_row.append("0")
             final_text_grid.append(f_row)
+
+#        if WallMatrixCreator.victim_in_grid():
+#            if FixtureClasiffier.classify_fixture == "U":
+#                f_row.append("U")
+#            if FixtureClasiffier.classify_fixture == "S":
+#                f_row.append("S")
+#            if FixtureClasiffier.classify_fixture == "H":
+#                f_row.append("H")
+#            final_text_grid.append(f_row)
 
         #set floor
         for y, row in enumerate(floor_type_array):
