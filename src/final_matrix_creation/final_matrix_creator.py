@@ -250,7 +250,7 @@ class FinalMatrixCreator:
         return intmatriz
     
     def stringMatrizreverse(self, matriz):
-        #matriz de string a int
+        #matriz de int a str
             stringmatriz = []
 
             for fila in matriz:
