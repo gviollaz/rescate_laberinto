@@ -41,7 +41,7 @@ class Mapper:
         self.pixel_grid = CompoundExpandablePixelGrid(initial_shape=np.array([1, 1]), 
                                                       pixel_per_m=pixels_per_tile / self.quarter_tile_size, 
                                                       robot_radius_m=(self.robot_diameter / 2) -0.008)
-        
+
         self.tile_color_grid = TileColorExpandableGrid(initial_shape=np.array((1, 1)),
                                                        tile_size=self.tile_size)
 
@@ -155,9 +155,26 @@ class Mapper:
         """
 
     def has_detected_victim_from_position(self):
-        robot_array_index = self.pixel_grid.grid_index_to_array_index(self.robot_grid_index)
-        return self.pixel_grid.arrays["robot_detected_fixture_from"][robot_array_index[0], robot_array_index[1]]
+        #print(CompoundExpandablePixelGrid)
+        #print(self.pixel_grid.grid_index_to_array_index)
+        #print(self.robot_grid_index)
+        robot_array_index = self.pixel_grid.grid_index_to_array_index(self.robot_grid_index) #coordenadas
+        #print(robot_array_index)
+        #self.has_detected_victim_from_position2()
+        #self.victim_position()
+        return self.pixel_grid.arrays["robot_detected_fixture_from"][robot_array_index[0], robot_array_index[1]] #retrona True or False (dependiendo si se detecto una victima o no)
     
+    #def victim_position(self):
+        #robot_matriz_position = CompoundExpandablePixelGrid.coordinates_to_grid_index(self.robot_position)
+        #robot_matriz_position = self.robot_grid_index
+        #print(robot_matriz_position)
+        #lista_de_posibles = []
+        #if self.has_detected_victim_from_position() == True:
+            #lista_de_posibles.append(robot_matriz_position)
+            #return lista_de_posibles
+            
+
+   
     def is_close_to_swamp(self):
         if self.robot_grid_index is None:
             return False
