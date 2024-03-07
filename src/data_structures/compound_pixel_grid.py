@@ -80,6 +80,8 @@ class CompoundExpandablePixelGrid:
         """
 
         array_index = self.grid_index_to_array_index(grid_index)
+        #print("voy aaaaaaaaa")
+        #print(array_index)
         if array_index[0] + 1 > self.array_shape[0]:
             self.add_end_row(array_index[0] - self.array_shape[0] + 1)
 
@@ -170,10 +172,11 @@ class CompoundExpandablePixelGrid:
         #color_grid[self.arrays["walls_not_seen_by_camera"]] = (0, 0, 1)
 
         color_grid *= 0.3
-
+        
         color_grid[self.arrays["victims"]] = (0, 1, 0)
 
         #color_grid[self.arrays["robot_center_traversed"]] = (.5, 0., .5)
         
  
         return color_grid
+
