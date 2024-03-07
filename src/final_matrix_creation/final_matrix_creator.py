@@ -8,7 +8,7 @@ import numpy as np
 import cv2 as cv
 
 from flags import SHOW_MAP_AT_END, DO_SAVE_FINAL_MAP, SAVE_FINAL_MAP_DIR, DO_SAVE_DEBUG_GRID, SAVE_DEBUG_GRID_DIR
-
+from mapping import mapper
 import time
 #from fixture_detection.fixture_clasification import FixtureClasiffier
 #from fixture_detection.fixture_detection import FixtureDetector
@@ -248,7 +248,21 @@ class FinalMatrixCreator:
             print(i)
         
         return intmatriz
-    
+    #def diferencia_mayor_a_10(coordenada1, coordenada2):
+        #return abs(coordenada1[0] - coordenada2[0]) > 10 or abs(coordenada1[1] - coordenada2[1]) > 10
+
+    #def punto_victim(self):
+        #lista1 = mapper.Mapper.victim_position()
+        #lista2 = []
+        #indiceuno = 0
+        #indicedos = 0
+        #for i in range (len(lista1)):
+            #for i in range (len(lista1)-1):
+                #if self.diferencia_mayor_a_10(lista1[indiceuno], lista1[indicedos]) == True:
+                    #lista2.append(lista1[indiceuno])
+                    #indicedos += 1
+        #indiceuno += 1
+
     def stringMatrizreverse(self, matriz):
         #matriz de int a str
             stringmatriz = []
@@ -269,7 +283,7 @@ class FinalMatrixCreator:
     #Quita las filas que contengan valores innecesarios
         columnastotales = len(matriz_procesar[0])
         column_reference = [0]*columnastotales
-        print("El vector de referencia es:", column_reference)
+        
     
         result = [elem for elem in matriz_procesar if elem != column_reference]
         return result
@@ -279,6 +293,208 @@ class FinalMatrixCreator:
         nueva_matriz = [list(columnas) for columnas in zip(*matriz)]
         return nueva_matriz
 
+    def correccion_de_bordes_filas(self, matriz):
+        cant_c = (len(matriz[0]))
+        columna = 0
+        for i in range (0, cant_c):
+            lmatrix = matriz[0][columna]
+            if lmatrix != "0":
+                columna += 1
+            elif lmatrix == "0":        
+                matriz[0][columna] = "1"
+                columna += 1
+
+        columna = 0
+        for i in range (0, cant_c):
+            lmatrix = matriz[-1][columna]
+            if lmatrix != "0":
+                columna += 1
+            elif lmatrix == "0":        
+                matriz[-1][columna] = "1"
+                columna += 1
+        columna = 0
+        return matriz
+
+    def correccion_de_bordes_columnas(self, matriz):
+        matriz = [list(columnas) for columnas in zip(*matriz)]
+        cant_c = (len(matriz[0]))
+        columna = 0
+        for i in range (0, cant_c):
+            lmatrix = matriz[0][columna]
+            if lmatrix != "0":
+                columna += 1
+            elif lmatrix == "0":        
+                matriz[0][columna] = "1"
+                columna += 1
+
+        columna = 0
+        for i in range (0, cant_c):
+            lmatrix = matriz[-1][columna]
+            if lmatrix != "0":
+                columna += 1
+            elif lmatrix == "0":        
+                matriz[-1][columna] = "1"
+                columna += 1
+        columna = 0
+        matriz = [list(columnas) for columnas in zip(*matriz)]
+        return matriz
+
+    def correccion_de_interioresA(self, matriz):
+        #corrige casos en que haya un 0 incorrecto en medio de dos 1
+        fila = 0
+        columna = 0
+        cant_f = (len(matriz))
+        cant_c = (len(matriz[0]))
+        for i in range (0, cant_f):
+            for i in range (0, cant_c):
+                lmatrix = matriz[fila][columna]
+                if lmatrix != "0":
+                    columna += 1
+                elif lmatrix == "0":
+                    if ((matriz[fila][columna + 1]) == "1") and ((matriz[fila][columna - 1]) == "1"):
+                        matriz[fila][columna] = "1"
+                        columna += 1
+
+                    elif ((matriz[fila + 1][columna]) == "1") and ((matriz[fila - 1][columna]) == "1"):
+                        matriz[fila][columna] = "1"
+                        columna += 1
+                
+                    else:
+                        columna+= 1
+            columna = 0
+            fila += 1
+        return matriz
+
+    def correccion_de_interioresB(self, matriz):
+        fila = 0
+        columna = 0
+        cant_f = len(matriz)
+        cant_c = len(matriz[0])
+        
+        for i in range(cant_f):
+            for j in range(cant_c):
+                lmatrix = matriz[fila][columna]
+                
+                if lmatrix == "0":
+                    if fila == 2 or fila == (cant_f - 2):
+                        pass
+                    else:
+                        try:
+                            if ((matriz[fila][columna + 1] == "1") and (matriz[fila][columna - 1] != "1") and (matriz[fila][columna + 2] == "1") and (matriz[fila + 1][columna] == "1") and (matriz[fila + 2][columna] == "1")): 
+                                if (((matriz[fila - 1][columna + 4] != "1") and (matriz[fila + 2][columna + 4] != "1")) and \
+                                ((matriz[fila + 4][columna - 1] != "1") and (matriz[fila + 4][columna - 2] != "1"))):
+                                    
+                                    matriz[fila][columna] = "1"
+                        except IndexError:
+                            pass
+
+                        try:
+                            if ((matriz[fila][columna - 1] == "1") and (matriz[fila][columna + 1] != "1") and (matriz[fila][columna - 2] == "1") and (matriz[fila + 1][columna] == "1") and (matriz[fila + 2][columna] == "1")):
+                                if (((matriz[fila - 1][columna - 4] != "1") and (matriz[fila - 2][columna - 4] != "1")) and \
+                                ((matriz[fila + 4][columna + 1] != "1") and (matriz[fila + 4][columna + 2] != "1"))):
+                                    
+                                    matriz[fila][columna] = "1"
+                        except IndexError:
+                            pass
+
+                columna += 1
+
+            columna = 0
+            fila += 1
+
+        return matriz
+
+
+    def correccion_de_interioresC(self, matriz):
+        #corrige vertices interiores hacia abajo
+        fila = 0
+        columna = 0
+        cant_f = len(matriz)
+        cant_c = len(matriz[0])
+        
+        for i in range(cant_f):
+            for j in range(cant_c):
+                lmatrix = matriz[fila][columna]
+                
+                if lmatrix == "0":
+                    if fila == 1 or fila == (cant_f - 2):
+                        pass
+                    else:
+                        try:
+                            if ((matriz[fila][columna + 1] == "1") and (matriz[fila][columna - 1] != "1") and (matriz[fila][columna + 2] == "1") and (matriz[fila - 1][columna] == "1") and (matriz[fila - 2][columna] == "1")):
+                                if (((matriz[fila + 1][columna + 4] != "1") and (matriz[fila + 2][columna + 4] != "1")) and \
+                                ((matriz[fila - 4][columna - 1] != "1") and (matriz[fila - 4][columna - 2] != "1"))):
+                                
+                                    matriz[fila][columna] = "1"
+                        except IndexError:
+                            pass
+
+                        try:
+                            if ((matriz[fila][columna - 1] == "1") and (matriz[fila][columna + 1] != "1") and (matriz[fila][columna - 2] == "1") and (matriz[fila - 1][columna] == "1") and (matriz[fila - 2][columna] == "1")):
+                                if (((matriz[fila + 1][columna-4] != "1") and (matriz[fila + 2][columna - 4] != "1")) and \
+                                ((matriz[fila - 4][columna + 1] != "1") and (matriz[fila - 4][columna + 2] != "1"))):
+                            
+                                    matriz[fila][columna] = "1"
+                        except IndexError:
+                            pass
+
+                columna += 1
+
+            columna = 0
+            fila += 1
+
+        return matriz
+    
+    def correccion_de_interioresD(self, matriz):
+        fila = 0
+        columna = 0
+        cant_f = len(matriz)
+        cant_c = len(matriz[0])
+        
+        for i in range(cant_f):
+            for j in range(cant_c):
+                lmatrix = matriz[fila][columna]
+                if lmatrix == "0":
+                    if (fila == 1 or fila == (cant_f - 2)) or (columna == 1 or columna == (columna == (cant_c - 2))):
+                        pass
+                    else:
+                        try:
+                            if ((matriz[fila][columna + 1] == "1") and (matriz[fila][columna +2] == "1") and (matriz[fila][columna + 3] != "1")):
+                                if ((matriz[fila - 1][columna] != "1") and (matriz[fila + 1][columna] != "1") and (matriz[fila - 1][columna + 3] != "1") and (matriz[fila + 1][columna + 3] != "1")):
+
+                                    matriz[fila][columna] = "1"
+                        except IndexError:
+                            pass
+                        try:
+                            if ((matriz[fila][columna - 1] == "1") and (matriz[fila][columna - 2] == "1") and (matriz[fila][columna -3] != "1")) :
+                                if ((matriz[fila - 1][columna] != "1") and (matriz[fila + 1][columna] != "1") and (matriz[fila - 1][columna - 3] != "1") and (matriz[fila + 1][columna - 3] != "1")):
+                            
+                                    matriz[fila][columna] = "1"
+                        except IndexError:
+                            pass
+
+                        try:
+                            if ((matriz[fila + 1][columna] == "1") and (matriz[fila + 2][columna] == "1") and (matriz[fila + 3][columna ] != "1")):
+                                if ((matriz[fila][columna - 1] != "1") and (matriz[fila][columna + 1] != "1") and (matriz[fila + 3][columna - 1] != "1") and (matriz[fila + 3][columna + 1] != "1")):
+                                    
+                                    matriz[fila][columna] = "1"
+                        except IndexError:
+                            pass
+
+                        try:
+                            if ((matriz[fila - 1][columna] == "1") and (matriz[fila - 2][columna] == "1") and (matriz[fila - 3 ][columna] != "1")):
+                                if ((matriz[fila][columna - 1] != "1") and (matriz[fila][columna + 1] != "1") and (matriz[fila - 3][columna - 1] != "1") and (matriz[fila - 3][columna + 1] != "1")):
+                            
+                                    matriz[fila][columna] = "1"
+                        except IndexError:
+                            pass
+
+                columna += 1
+
+            columna = 0
+            fila += 1
+
+        return matriz
     def pixel_grid_to_final_grid(self, pixel_grid: CompoundExpandablePixelGrid, robot_start_position: np.ndarray) -> np.ndarray:
         np.set_printoptions(linewidth=1000000000000, threshold=100000000000000)
         wall_array = pixel_grid.arrays["walls"]
@@ -312,21 +528,21 @@ class FinalMatrixCreator:
 
         # Mix everything togehter
         text_grid = self.__get_final_text_grid(wall_node_array, floor_string_array, robot_node)
-        #print("imprimo text grid")
-        #print(text_grid)
         text_grid = self.stringMatriz(text_grid)
-        #print("en int")
-        #print(text_grid)
         text_grid = self.delete_row(text_grid)
-        #print("sin primeros 0")
-        #print(text_grid)
         text_grid = self.transposed_matriz2(text_grid)
         text_grid = self.delete_row(text_grid)
         text_grid = self.transposed_matriz2(text_grid)
         text_grid = self.stringMatrizreverse(text_grid)
-        #print("en str")
-        #print(text_grid)
+        text_grid = self.correccion_de_bordes_filas(text_grid)
+        text_grid = self.correccion_de_bordes_columnas(text_grid)
+        text_grid = self.correccion_de_interioresA(text_grid)
+        text_grid = self.correccion_de_interioresB(text_grid)
+        text_grid = self.correccion_de_interioresC(text_grid)
+        text_grid = self.correccion_de_interioresD(text_grid)
+
         return np.array(text_grid)
+        
 
         #wall_array = self.offset_array(wall_array, self.square_size_px, pixel_grid.offsets)
         #color_array = self.offset_array(color_array, self.square_size_px, pixel_grid.offsets)
